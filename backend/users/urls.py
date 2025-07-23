@@ -9,4 +9,4 @@ urlpatterns = [
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('follow/<int:pk>/', FollowView.as_view(), name='follow'),
     path('suggested/', SuggestedUsersView.as_view(), name='suggested_users'),
-] 
+]

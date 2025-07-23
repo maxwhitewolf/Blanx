@@ -72,4 +72,4 @@ class LikedPostsView(generics.ListAPIView):
     pagination_class = PostPagination
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(likes=user).order_by('-created_at') 
+        return Post.objects.filter(likes=user).order_by('-created_at')

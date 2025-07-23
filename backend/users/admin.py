@@ -15,4 +15,4 @@ class UserAdmin(admin.ModelAdmin):
         return obj.following.count()
     following_count.short_description = 'Following'
 
-admin.site.register(User, UserAdmin) 
+admin.site.register(User, UserAdmin)

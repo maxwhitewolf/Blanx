@@ -32,4 +32,4 @@ class MessageListCreateView(generics.ListCreateAPIView):
         conversation_id = self.kwargs['conversation_id']
         conversation = get_object_or_404(Conversation, pk=conversation_id, participants=self.request.user)
         self.check_object_permissions(self.request, conversation)
-        serializer.save(sender=self.request.user, conversation=conversation) 
+        serializer.save(sender=self.request.user, conversation=conversation)
