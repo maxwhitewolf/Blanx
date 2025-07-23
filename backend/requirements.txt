@@ -1,0 +1,11 @@
+Django>=4.2
+psycopg2-binary
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+channels>=3.0
+channels-redis
+celery
+redis
+Pillow
+daphne 
