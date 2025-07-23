@@ -8,7 +8,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm] = useState({ login: '', password: '' });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,9 +40,9 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            name="username"
-            placeholder="Username"
-            value={form.username}
+            name="login"
+            placeholder="Username or Email"
+            value={form.login}
             onChange={handleChange}
             className="w-full border border-border rounded px-3 py-2"
             required

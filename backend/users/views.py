@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from django.shortcuts import get_object_or_404
 
 User = get_user_model()
@@ -31,6 +31,9 @@ class FollowView(views.APIView):
         to_unfollow = get_object_or_404(User, pk=pk)
         user.following.remove(to_unfollow)
         return Response({'status': 'unfollowed'})
+
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginSerializer
 
 class SuggestedUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
