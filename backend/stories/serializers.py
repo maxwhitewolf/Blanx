@@ -20,4 +20,4 @@ class StorySerializer(serializers.ModelSerializer):
     expires_at = serializers.DateTimeField(read_only=True)
     class Meta:
         model = Story
-        fields = ('id', 'user', 'media', 'created_at', 'expires_at', 'viewers', 'reactions', 'comments') 
+        fields = ('id', 'user', 'media', 'created_at', 'expires_at', 'viewers', 'reactions', 'comments')

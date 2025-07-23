@@ -8,4 +8,4 @@ urlpatterns = [
     path('api/stories/', include('stories.urls')),
     path('api/dm/', include('dm.urls')),
     path('api/notifications/', include('notifications.urls')),
-] 
+]

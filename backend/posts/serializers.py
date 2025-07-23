@@ -22,4 +22,4 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'image', 'caption', 'created_at', 'likes', 'like_count', 'comments')
 
     def get_like_count(self, obj):
-        return obj.likes.count() 
+        return obj.likes.count()

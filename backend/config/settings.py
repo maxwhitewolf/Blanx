@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -126,11 +127,9 @@ CHANNEL_LAYERS = {
 
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-
-from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'delete-expired-stories-every-hour': {
         'task': 'stories.tasks.delete_expired_stories',
         'schedule': crontab(minute=0, hour='*'),
     },
-} 
+}

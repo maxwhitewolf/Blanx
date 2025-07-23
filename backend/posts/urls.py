@@ -9,4 +9,4 @@ urlpatterns = [
     path('<int:post_id>/comments/', CommentCreateView.as_view(), name='comment-create'),
     path('user/<str:username>/', UserPostsView.as_view(), name='user-posts'),
     path('liked/', LikedPostsView.as_view(), name='liked-posts'),
-] 
+]

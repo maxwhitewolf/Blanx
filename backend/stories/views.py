@@ -44,4 +44,4 @@ class StoryCommentListCreateView(generics.ListCreateAPIView):
         return StoryComment.objects.filter(story_id=story_id)
     def perform_create(self, serializer):
         story_id = self.kwargs['story_id']
-        serializer.save(user=self.request.user, story_id=story_id) 
+        serializer.save(user=self.request.user, story_id=story_id)
