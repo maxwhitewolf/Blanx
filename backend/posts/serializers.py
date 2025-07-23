@@ -35,6 +35,9 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_like_count(self, obj):
         return obj.likes.count()
+<<<<<<< HEAD
 
     def get_tags(self, obj):
         return re.findall(r'#(\w+)', obj.caption or '')
+=======
+>>>>>>> 2acea2a (Refine ASGI routing)

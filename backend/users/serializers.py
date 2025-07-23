@@ -54,6 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+<<<<<<< HEAD
 
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -89,3 +90,5 @@ class LoginSerializer(TokenObtainPairSerializer):
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
         return data
+=======
+>>>>>>> 2acea2a (Refine ASGI routing)

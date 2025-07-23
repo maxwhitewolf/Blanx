@@ -76,6 +76,7 @@ class LikedPostsView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Post.objects.filter(likes=user).order_by('-created_at')
+<<<<<<< HEAD
 
 
 class ExploreView(generics.ListAPIView):
@@ -119,3 +120,5 @@ class SearchView(views.APIView):
         posts = PostSerializer(post_qs, many=True, context={'request': request}).data
 
         return Response({'users': users, 'posts': posts})
+=======
+>>>>>>> 2acea2a (Refine ASGI routing)
