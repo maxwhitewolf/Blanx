@@ -9,7 +9,10 @@ const Search = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {

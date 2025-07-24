@@ -5,6 +5,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+from users.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -73,4 +74,22 @@ class LikedPostsView(generics.ListAPIView):
     pagination_class = PostPagination
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(likes=user).order_by('-created_at') 
+        return Post.objects.filter(likes=user).order_by('-created_at')
+
+
+class SearchView(views.APIView):
+    """Search posts by caption and users by username."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+        if not query:
+            return Response([])
+
+        user_qs = User.objects.filter(username__icontains=query)[:5]
+        post_qs = Post.objects.filter(caption__icontains=query)[:5]
+
+        users = UserSerializer(user_qs, many=True).data
+        posts = PostSerializer(post_qs, many=True).data
+
+        return Response(users + posts)
