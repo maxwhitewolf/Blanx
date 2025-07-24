@@ -13,10 +13,17 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
-class ProfileView(generics.RetrieveAPIView):
+class ProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'username'
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        if user != request.user:
+            return Response({'detail': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
 
 class FollowView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
