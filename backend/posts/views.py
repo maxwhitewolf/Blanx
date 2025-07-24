@@ -36,7 +36,8 @@ class FeedView(generics.ListAPIView):
     pagination_class = PostPagination
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(user__in=user.following.all()).order_by('-created_at')
+        following_ids = list(user.following.values_list('id', flat=True)) + [user.id]
+        return Post.objects.filter(user_id__in=following_ids).order_by('-created_at')
 
 class LikePostView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
