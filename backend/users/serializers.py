@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.models import update_last_login
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.settings import api_settings
 
 User = get_user_model()
 
@@ -61,10 +63,13 @@ class LoginSerializer(TokenObtainPairSerializer):
         if user is None:
             raise serializers.ValidationError('Invalid credentials')
 
-        refresh = self.get_token(user)
+        self.user = user
+        refresh = self.get_token(self.user)
         data = {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
         return data
 
