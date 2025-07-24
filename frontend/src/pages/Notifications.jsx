@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
-import socket from '../api/socket';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ws, setWs] = useState(null);
 
   // Polling fallback
   useEffect(() => {
@@ -28,16 +28,16 @@ const Notifications = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Real-time via socket.io
+  // Real-time via WebSocket
   useEffect(() => {
-    socket.connect();
-    socket.on('notification', (notif) => {
-      setNotifications((prev) => [notif, ...prev]);
-    });
-    return () => {
-      socket.off('notification');
-      socket.disconnect();
+    const base = (process.env.REACT_APP_SOCKET_URL || 'ws://localhost:8001').replace(/\/$/, '');
+    const conn = new WebSocket(`${base}/ws/notifications/`);
+    conn.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      setNotifications((prev) => [data, ...prev]);
     };
+    setWs(conn);
+    return () => conn.close();
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 const Settings = () => {
   const user = useSelector((state) => state.auth.user);
   const [form, setForm] = useState({ username: '', email: '', bio: '', avatar: null });
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -22,6 +23,7 @@ const Settings = () => {
           bio: res.data.bio || '',
           avatar: null,
         });
+        if (res.data.avatar) setAvatarPreview(res.data.avatar);
       } catch (err) {
         setError('Failed to load profile.');
       } finally {
@@ -34,7 +36,10 @@ const Settings = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'avatar') {
-      setForm((f) => ({ ...f, avatar: files[0] }));
+      const f = files[0];
+      setForm((fState) => ({ ...fState, avatar: f }));
+      if (f) setAvatarPreview(URL.createObjectURL(f));
+      else setAvatarPreview(null);
     } else {
       setForm((f) => ({ ...f, [name]: value }));
     }
@@ -53,6 +58,7 @@ const Settings = () => {
       if (form.avatar) formData.append('avatar', form.avatar);
       await updateProfile(user.username, formData);
       setSuccess(true);
+      if (form.avatar) setAvatarPreview(URL.createObjectURL(form.avatar));
     } catch (err) {
       setError('Failed to update profile.');
     } finally {
@@ -70,6 +76,9 @@ const Settings = () => {
         <div>
           <label className="block font-semibold mb-1">Avatar</label>
           <input type="file" name="avatar" accept="image/*" onChange={handleChange} />
+          {avatarPreview && (
+            <img src={avatarPreview} alt="avatar preview" className="mt-2 w-24 h-24 object-cover rounded-full" />
+          )}
         </div>
         <div>
           <label className="block font-semibold mb-1">Username</label>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchPosts } from '../api/posts';
 
+const isVideo = (url) => /\.(mp4|webm|ogg|mov)$/i.test(url || '');
+
 const Reels = () => {
   const [reels, setReels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,8 +14,7 @@ const Reels = () => {
       setError(null);
       try {
         const res = await fetchPosts();
-        // Filter for video posts (assuming backend marks them)
-        setReels(res.data.filter((p) => p.video));
+        setReels(res.data.filter((p) => isVideo(p.image)));
       } catch (err) {
         setReels([]);
         setError('Failed to load reels.');
@@ -39,7 +40,7 @@ const Reels = () => {
         <div className="space-y-4">
           {reels.map((reel) => (
             <div key={reel.id} className="bg-black rounded overflow-hidden">
-              <video src={reel.video} controls className="w-full h-96 object-cover" />
+              <video src={reel.image} controls className="w-full h-96 object-cover" />
               <div className="p-2 text-white">{reel.caption}</div>
             </div>
           ))}

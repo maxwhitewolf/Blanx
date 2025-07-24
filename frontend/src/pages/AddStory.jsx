@@ -4,13 +4,20 @@ import { useNavigate } from 'react-router-dom';
 
 const AddStory = () => {
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const f = e.target.files[0];
+    setFile(f);
+    if (f) {
+      setPreview(URL.createObjectURL(f));
+    } else {
+      setPreview(null);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -24,6 +31,8 @@ const AddStory = () => {
       formData.append('media', file);
       await uploadStory(formData);
       setSuccess(true);
+      setPreview(null);
+      setFile(null);
       setTimeout(() => navigate('/'), 1000);
     } catch (err) {
       setError('Upload failed.');
@@ -37,6 +46,13 @@ const AddStory = () => {
       <h1 className="text-primary text-2xl font-bold mb-4">Add Story</h1>
       <form onSubmit={handleSubmit} className="space-y-4 bg-white rounded shadow p-4">
         <input type="file" accept="image/*,video/*" onChange={handleFileChange} />
+        {preview && (
+          preview.match(/\.mp4|\.webm|\.ogg|\.mov$/i) ? (
+            <video src={preview} controls className="w-full rounded" />
+          ) : (
+            <img src={preview} alt="preview" className="w-full rounded" />
+          )
+        )}
         <button
           type="submit"
           className="w-full bg-primary text-white py-2 rounded font-semibold"
