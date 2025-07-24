@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPosts } from '../api/posts';
+import { fetchExplore } from '../api/posts';
 
 const tags = ['all', 'nature', 'food', 'travel', 'art', 'sports'];
 
@@ -17,10 +17,12 @@ const Explore = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetchPosts();
+        const params = { sort: filter };
+        if (tag !== 'all') params.tag = tag;
+        if (user !== 'all') params.user = user;
+        const res = await fetchExplore(params);
         setPosts(res.data);
-        // Collect unique users for filter
-        const uniqueUsers = Array.from(new Set(res.data.map(p => p.user?.username).filter(Boolean)));
+        const uniqueUsers = Array.from(new Set(res.data.map(p => p.user).filter(Boolean)));
         setUsers(['all', ...uniqueUsers]);
       } catch (err) {
         setPosts([]);
@@ -30,19 +32,9 @@ const Explore = () => {
       }
     };
     loadPosts();
-  }, []);
+  }, [filter, tag, user]);
 
-  let filteredPosts = posts;
-  if (tag !== 'all') {
-    filteredPosts = filteredPosts.filter((p) => p.tags?.includes(tag));
-  }
-  if (user !== 'all') {
-    filteredPosts = filteredPosts.filter((p) => p.user?.username === user);
-  }
-  filteredPosts =
-    filter === 'trending'
-      ? [...filteredPosts].sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
-      : [...filteredPosts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const filteredPosts = posts;
 
   return (
     <main className="max-w-4xl mx-auto p-4">
