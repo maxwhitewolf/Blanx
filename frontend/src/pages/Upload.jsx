@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPost } from '../api/posts';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,13 @@ const Upload = () => {
       setPreview(null);
     }
   };
+
+  // Clean up object URL when changed or component unmounts
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

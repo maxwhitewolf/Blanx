@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { uploadStory } from '../api/stories';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +19,13 @@ const AddStory = () => {
       setPreview(null);
     }
   };
+
+  // Clean up object URL to avoid memory leaks
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
