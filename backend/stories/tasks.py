@@ -8,4 +8,4 @@ def delete_expired_stories():
     expired_stories = Story.objects.filter(created_at__lt=now - timezone.timedelta(hours=24))
     count = expired_stories.count()
     expired_stories.delete()
-    return f"Deleted {count} expired stories." 
+    return f"Deleted {count} expired stories."

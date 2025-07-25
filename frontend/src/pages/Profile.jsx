@@ -25,17 +25,7 @@ const Profile = () => {
       setLoading(true);
       setError(null);
       try {
-        let userId = null;
-        if (currentUser && currentUser.username === username) {
-          userId = currentUser.id;
-        } else {
-          // Fallback: fetch user by username from posts or another API (not implemented here)
-          // For now, show error if not current user
-          setError('Profile not found.');
-          setLoading(false);
-          return;
-        }
-        const res = await getProfile(userId);
+        const res = await getProfile(username);
         setProfile(res.data);
         setBio(res.data.bio || '');
         setIsFollowing(res.data.is_following || false);
@@ -47,7 +37,7 @@ const Profile = () => {
       }
     };
     loadProfile();
-  }, [username, currentUser]);
+  }, [username]);
 
   useEffect(() => {
     if (tab === 'posts') {
@@ -61,7 +51,7 @@ const Profile = () => {
     setSaving(true);
     setSaveError(null);
     try {
-      await updateProfile(profile.id, { bio });
+      await updateProfile(profile.username, { bio });
       setProfile((p) => ({ ...p, bio }));
       setEditing(false);
     } catch (err) {
@@ -106,14 +96,19 @@ const Profile = () => {
           </div>
           <div className="text-sm text-text mt-2">{profile.bio}</div>
           <div className="flex space-x-2 mt-2">
-            <button className="text-primary border border-primary rounded px-3 py-1" onClick={handleEdit}>Edit Profile</button>
-            <button
-              className={`px-3 py-1 rounded ${isFollowing ? 'bg-danger text-white' : 'bg-primary text-white'}`}
-              onClick={handleFollow}
-              disabled={followLoading}
-            >
-              {followLoading ? '...' : isFollowing ? 'Unfollow' : 'Follow'}
-            </button>
+            {currentUser && currentUser.username === profile.username ? (
+              <button className="text-primary border border-primary rounded px-3 py-1" onClick={handleEdit}>
+                Edit Profile
+              </button>
+            ) : (
+              <button
+                className={`px-3 py-1 rounded ${isFollowing ? 'bg-danger text-white' : 'bg-primary text-white'}`}
+                onClick={handleFollow}
+                disabled={followLoading}
+              >
+                {followLoading ? '...' : isFollowing ? 'Unfollow' : 'Follow'}
+              </button>
+            )}
           </div>
         </div>
       </div>
