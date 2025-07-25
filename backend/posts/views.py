@@ -1,10 +1,12 @@
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+from users.serializers import UserSerializer
 
 User = get_user_model()
 
@@ -36,7 +38,8 @@ class FeedView(generics.ListAPIView):
     pagination_class = PostPagination
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(user__in=user.following.all()).order_by('-created_at')
+        following_ids = list(user.following.values_list('id', flat=True)) + [user.id]
+        return Post.objects.filter(user_id__in=following_ids).order_by('-created_at')
 
 class LikePostView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -72,4 +75,47 @@ class LikedPostsView(generics.ListAPIView):
     pagination_class = PostPagination
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(likes=user).order_by('-created_at') 
+        return Post.objects.filter(likes=user).order_by('-created_at')
+
+
+class ExploreView(generics.ListAPIView):
+    """Return trending or recent posts with optional filters."""
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = PostPagination
+
+    def get_queryset(self):
+        qs = Post.objects.all()
+
+        tag = self.request.query_params.get('tag')
+        if tag:
+            qs = qs.filter(caption__icontains=f"#{tag}")
+
+        username = self.request.query_params.get('user')
+        if username:
+            qs = qs.filter(user__username=username)
+
+        sort = self.request.query_params.get('sort')
+        if sort == 'recent':
+            qs = qs.order_by('-created_at')
+        else:
+            qs = qs.annotate(like_count=Count('likes')).order_by('-like_count', '-created_at')
+        return qs
+
+
+class SearchView(views.APIView):
+    """Search posts by caption and users by username."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+        if not query:
+            return Response([])
+
+        user_qs = User.objects.filter(username__icontains=query)[:5]
+        post_qs = Post.objects.filter(caption__icontains=query)[:5]
+
+        users = UserSerializer(user_qs, many=True, context={'request': request}).data
+        posts = PostSerializer(post_qs, many=True, context={'request': request}).data
+
+        return Response({'users': users, 'posts': posts})

@@ -3,20 +3,23 @@ import api from '../api/axios';
 
 const Search = () => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState({ users: [], posts: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setResults({ users: [], posts: [] });
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const res = await api.get(`search/?q=${encodeURIComponent(query)}`);
       setResults(res.data);
     } catch (err) {
-      setResults([]);
+      setResults({ users: [], posts: [] });
       setError('Search failed.');
     } finally {
       setLoading(false);
@@ -43,17 +46,32 @@ const Search = () => {
         </div>
       ) : error ? (
         <div className="text-danger text-center">{error}</div>
-      ) : results.length > 0 ? (
-        <div className="space-y-2">
-          {results.map((item, idx) => (
-            <div key={idx} className="bg-white rounded shadow p-2">
-              {item.username ? (
-                <span className="font-semibold">User: {item.username}</span>
-              ) : (
-                <span>Post: {item.caption}</span>
-              )}
+      ) : results.users.length || results.posts.length ? (
+        <div className="space-y-4">
+          {results.users.length > 0 && (
+            <div>
+              <h2 className="font-semibold mb-2">Users</h2>
+              <div className="space-y-2">
+                {results.users.map((user, idx) => (
+                  <div key={`u-${idx}`} className="bg-white rounded shadow p-2">
+                    <span className="font-semibold">{user.username}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          )}
+          {results.posts.length > 0 && (
+            <div>
+              <h2 className="font-semibold mb-2">Posts</h2>
+              <div className="space-y-2">
+                {results.posts.map((post, idx) => (
+                  <div key={`p-${idx}`} className="bg-white rounded shadow p-2">
+                    <span>{post.caption}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="text-center text-gray-500">No results.</div>

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Comment
+import re
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
@@ -16,10 +17,24 @@ class PostSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     comments = CommentSerializer(many=True, read_only=True)
     like_count = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ('id', 'user', 'image', 'caption', 'created_at', 'likes', 'like_count', 'comments')
+        fields = (
+            'id',
+            'user',
+            'image',
+            'caption',
+            'tags',
+            'created_at',
+            'likes',
+            'like_count',
+            'comments',
+        )
 
     def get_like_count(self, obj):
-        return obj.likes.count() 
+        return obj.likes.count()
+
+    def get_tags(self, obj):
+        return re.findall(r'#(\w+)', obj.caption or '')

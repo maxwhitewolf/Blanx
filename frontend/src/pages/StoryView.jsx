@@ -102,8 +102,21 @@ const StoryView = () => {
   if (!stories.length) return <div className="text-center p-8">No stories available.</div>;
 
   const story = stories[current];
-  const nextStory = () => setCurrent((c) => (c + 1 < stories.length ? c + 1 : c));
-  const prevStory = () => setCurrent((c) => (c - 1 >= 0 ? c - 1 : c));
+  const nextStory = React.useCallback(() => {
+    setCurrent((c) => (c + 1 < stories.length ? c + 1 : c));
+  }, [stories.length]);
+  const prevStory = React.useCallback(() => {
+    setCurrent((c) => (c - 1 >= 0 ? c - 1 : c));
+  }, []);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'ArrowRight') nextStory();
+      if (e.key === 'ArrowLeft') prevStory();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [nextStory, prevStory]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">

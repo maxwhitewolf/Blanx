@@ -60,6 +60,7 @@ const Feed = () => {
   return (
     <main className="max-w-xl mx-auto p-4">
       <StorySlider stories={stories} />
+      <TrendingStories />
       {loading ? (
         <div className="space-y-4 animate-pulse">
           {Array.from({ length: 3 }).map((_, i) => (
