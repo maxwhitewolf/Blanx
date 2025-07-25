@@ -8,4 +8,5 @@ export const likePost = (id) => api.post(`posts/${id}/like/`);
 export const unlikePost = (id) => api.delete(`posts/${id}/like/`);
 export const addComment = (postId, data) => api.post(`posts/${postId}/comments/`, data);
 export const fetchExplore = (params) => api.get('posts/explore/', { params });
+export const fetchLikedPosts = () => api.get('posts/liked/');
 
