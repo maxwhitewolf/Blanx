@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getProfile, updateProfile, followUser, unfollowUser } from '../api/auth';
-import { fetchUserPosts } from '../api/posts';
+import { fetchUserPosts, fetchLikedPosts } from '../api/posts';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -19,6 +19,7 @@ const Profile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [tab, setTab] = useState('posts');
   const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -42,8 +43,10 @@ const Profile = () => {
   useEffect(() => {
     if (tab === 'posts') {
       fetchUserPosts(username).then(res => setPosts(res.data)).catch(() => setPosts([]));
+      setLikedPosts([]);
+    } else if (tab === 'liked') {
+      fetchLikedPosts().then(res => setLikedPosts(res.data)).catch(() => setLikedPosts([]));
     }
-    // TODO: fetch liked posts for 'liked' tab
   }, [tab, username]);
 
   const handleEdit = () => navigate('/settings');
@@ -125,8 +128,12 @@ const Profile = () => {
           ))
         ) : tab === 'posts' ? (
           <div className="col-span-3 text-center text-gray-500">No posts yet.</div>
+        ) : tab === 'liked' && likedPosts.length > 0 ? (
+          likedPosts.map(post => (
+            <img key={post.id} src={post.image} alt="" className="w-full h-40 object-cover rounded" />
+          ))
         ) : (
-          <div className="col-span-3 text-center text-gray-500">Liked posts coming soon.</div>
+          <div className="col-span-3 text-center text-gray-500">No liked posts yet.</div>
         )}
       </div>
     </div>
