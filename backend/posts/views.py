@@ -115,7 +115,7 @@ class SearchView(views.APIView):
         user_qs = User.objects.filter(username__icontains=query)[:5]
         post_qs = Post.objects.filter(caption__icontains=query)[:5]
 
-        users = UserSerializer(user_qs, many=True).data
-        posts = PostSerializer(post_qs, many=True).data
+        users = UserSerializer(user_qs, many=True, context={'request': request}).data
+        posts = PostSerializer(post_qs, many=True, context={'request': request}).data
 
-        return Response(users + posts)
+        return Response({'users': users, 'posts': posts})
