@@ -6,4 +6,4 @@ urlpatterns = [
     path('<int:pk>/viewers/', StoryViewersView.as_view(), name='story-viewers'),
     path('<int:story_id>/reactions/', StoryReactionListCreateView.as_view(), name='story-reactions'),
     path('<int:story_id>/comments/', StoryCommentListCreateView.as_view(), name='story-comments'),
-] 
+]

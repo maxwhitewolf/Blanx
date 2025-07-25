@@ -46,4 +46,4 @@ class SuggestedUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
-        return User.objects.exclude(pk=self.request.user.pk)[:5] 
+        return User.objects.exclude(pk=self.request.user.pk)[:5]

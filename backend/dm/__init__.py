@@ -1,1 +1,1 @@
- 
+"""Direct messaging app."""
