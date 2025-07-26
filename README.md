@@ -3,10 +3,10 @@
 This is a simple social media platform with a Django backend and React frontend.
 
 ## Setup
-Install dependencies:
+Install dependencies (backend and frontend):
 ```bash
 pip install -r backend/requirements.txt
-npm install
+cd frontend && npm install
 ```
 
 Run backend:
@@ -16,13 +16,13 @@ python backend/manage.py runserver
 
 Run frontend:
 ```bash
-npm start
+npm --prefix frontend start
 ```
 
 ## Tests
 ```bash
 python backend/manage.py test
-npm test --silent
+npm --prefix frontend test --silent
 ```
 
 
