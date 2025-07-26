@@ -25,3 +25,7 @@ python backend/manage.py test
 npm test --silent
 ```
 
+
+## Authentication
+Users can sign in using either their username or email address. The login API
+returns JWT access and refresh tokens on success.
