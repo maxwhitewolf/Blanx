@@ -40,7 +40,7 @@ const Sidebar = ({ user }) => {
   ];
 
   return (
-    <aside className="h-screen w-64 bg-black text-white flex flex-col py-8 px-4 border-r border-gray-800 min-w-[64px]">
+    <aside className="h-screen w-64 bg-card text-text flex flex-col py-8 px-4 border-r border-border min-w-[64px] transition-colors">
       {/* Instagram Logo */}
       <div className="mb-8 flex items-center justify-center">
         <span className="text-3xl font-bold font-logo cursor-pointer" onClick={() => navigate('/')}>Instagram</span>
@@ -50,7 +50,7 @@ const Sidebar = ({ user }) => {
           <Link
             key={item.to}
             to={item.to}
-            className={`flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800 transition ${
+            className={`flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-800 transition-colors ${
               location.pathname === item.to ? 'bg-gray-900' : ''
             }`}
           >

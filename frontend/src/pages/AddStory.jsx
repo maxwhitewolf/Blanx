@@ -35,7 +35,7 @@ const AddStory = () => {
   return (
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-primary text-2xl font-bold mb-4">Add Story</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white rounded shadow p-4">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-card rounded shadow p-4 border border-border transition-colors">
         <input type="file" accept="image/*,video/*" onChange={handleFileChange} />
         <button
           type="submit"
