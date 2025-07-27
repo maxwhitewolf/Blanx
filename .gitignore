@@ -118,6 +118,7 @@ venv.bak/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+backend/media/
 
 # Celery
 celerybeat-schedule
@@ -169,8 +170,6 @@ target/
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
