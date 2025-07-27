@@ -8,5 +8,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11"
+  },
+  "name": "blanx",
+  "private": true,
+  "scripts": {
+    "test": "npm --prefix frontend test"
   }
 }
