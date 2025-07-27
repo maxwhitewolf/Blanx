@@ -1,0 +1,95 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: socialmedia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Jayanth123
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - '6379:6379'
+
+  django:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SECRET_KEY=your-secret-key
+      - POSTGRES_DB=socialmedia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Jayanth123
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+
+  daphne:
+    build: ./backend
+    command: daphne -b 0.0.0.0 -p 8001 config.asgi:application
+    volumes:
+      - ./backend:/app
+    ports:
+      - '8001:8001'
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SECRET_KEY=your-secret-key
+      - POSTGRES_DB=socialmedia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Jayanth123
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+
+  celeryworker:
+    build: ./backend
+    command: celery -A config worker -l info
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SECRET_KEY=your-secret-key
+      - POSTGRES_DB=socialmedia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Jayanth123
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+
+  celerybeat:
+    build: ./backend
+    command: celery -A config beat -l info
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SECRET_KEY=your-secret-key
+      - POSTGRES_DB=socialmedia
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Jayanth123
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+
+volumes:
+  postgres_data: 
