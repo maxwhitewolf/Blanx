@@ -6,18 +6,29 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """Allow owners full access while others get read-only."""
+
+    def has_object_permission(self, request, view, obj):
+        return request.method in permissions.SAFE_METHODS or obj.user == request.user
+
 class StoryListCreateView(generics.ListCreateAPIView):
     serializer_class = StorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        # Show stories from followed users and self, not expired, distinct and ordered
+        # Show active stories from followed users and self
         now = timezone.now()
-        return Story.objects.filter(
-            user__in=list(user.following.all()) + [user], 
-            created_at__gte=now - timezone.timedelta(hours=24)
-        ).distinct().order_by('-created_at')
+        return (
+            Story.objects.filter(
+                user__in=list(user.following.all()) + [user],
+                expires_at__gt=now,
+            )
+            .distinct()
+            .order_by('-created_at')
+        )
 
     def perform_create(self, serializer):
         instance = serializer.save(user=self.request.user)
@@ -28,7 +39,7 @@ class StoryListCreateView(generics.ListCreateAPIView):
 class StoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         # Only allow users to see stories from followed users and self

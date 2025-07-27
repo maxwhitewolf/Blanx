@@ -14,13 +14,6 @@ const StorySlider = ({ stories = [] }) => {
   const userStory = uniqueStories.find(s => s.user?.username === user?.username);
   const otherStories = uniqueStories.filter(s => s.user?.username !== user?.username);
   
-  // Debug logging
-  console.log('StorySlider Debug:', {
-    totalStories: stories.length,
-    uniqueStories: uniqueStories.length,
-    userStory: userStory?.id,
-    otherStories: otherStories.map(s => ({ id: s.id, username: s.user?.username }))
-  });
   
   const handleUserStoryClick = () => {
     if (!userStory) {
