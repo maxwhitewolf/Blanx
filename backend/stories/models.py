@@ -11,6 +11,8 @@ class Story(models.Model):
     viewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='viewed_stories', blank=True)
 
     def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(hours=24)
         super().save(*args, **kwargs)
 
     def __str__(self):
