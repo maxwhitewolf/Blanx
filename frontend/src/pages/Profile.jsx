@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getProfile, followUser, unfollowUser } from '../api/auth';
-import { fetchUserPosts } from '../api/posts';
+import { fetchUserPosts, fetchLikedPosts } from '../api/posts';
 import { createConversation } from '../api/dm';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const Profile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [tab, setTab] = useState('posts');
   const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   // If no username in URL, use current user's username
   const targetUsername = username || (currentUser ? currentUser.username : null);
@@ -55,16 +56,28 @@ const Profile = () => {
   useEffect(() => {
     if (tab === 'posts' && targetUsername) {
       console.log('Fetching posts for username:', targetUsername);
-      fetchUserPosts(targetUsername).then(res => {
-        console.log('Posts response:', res.data);
-        setPosts(res.data);
-      }).catch(err => {
-        console.error('Posts loading error:', err);
-        console.error('Posts error response:', err.response);
-        setPosts([]);
-      });
+      fetchUserPosts(targetUsername)
+        .then((res) => {
+          console.log('Posts response:', res.data);
+          setPosts(res.data);
+        })
+        .catch((err) => {
+          console.error('Posts loading error:', err);
+          console.error('Posts error response:', err.response);
+          setPosts([]);
+        });
+    } else if (tab === 'liked') {
+      fetchLikedPosts()
+        .then((res) => {
+          console.log('Liked posts response:', res.data);
+          setLikedPosts(res.data);
+        })
+        .catch((err) => {
+          console.error('Liked posts loading error:', err);
+          console.error('Liked posts error response:', err.response);
+          setLikedPosts([]);
+        });
     }
-    // TODO: fetch liked posts for 'liked' tab
   }, [tab, targetUsername]);
 
   const handleEdit = () => navigate('/settings');
@@ -169,14 +182,20 @@ const Profile = () => {
       </div>
       {/* Posts grid */}
       <div className="grid grid-cols-3 gap-2 mt-4">
-        {tab === 'posts' && posts.length > 0 ? (
-          posts.map(post => (
+        {tab === 'posts' ? (
+          posts.length > 0 ? (
+            posts.map((post) => (
+              <img key={post.id} src={post.image} alt="" className="w-full h-40 object-cover rounded" />
+            ))
+          ) : (
+            <div className="col-span-3 text-center text-gray-500">No posts yet.</div>
+          )
+        ) : likedPosts.length > 0 ? (
+          likedPosts.map((post) => (
             <img key={post.id} src={post.image} alt="" className="w-full h-40 object-cover rounded" />
           ))
-        ) : tab === 'posts' ? (
-          <div className="col-span-3 text-center text-gray-500">No posts yet.</div>
         ) : (
-          <div className="col-span-3 text-center text-gray-500">Liked posts coming soon.</div>
+          <div className="col-span-3 text-center text-gray-500">No liked posts yet.</div>
         )}
       </div>
     </div>
