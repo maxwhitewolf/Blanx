@@ -124,7 +124,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <div className="bg-white rounded shadow p-4 flex items-center space-x-4">
+      <div className="bg-card rounded shadow p-4 flex items-center space-x-4 border border-border transition-colors">
         {profile.avatar ? (
           <img src={profile.avatar} alt="avatar" className="w-20 h-20 rounded-full object-cover" />
         ) : (
@@ -163,7 +163,7 @@ const Profile = () => {
         </div>
       </div>
       {/* Tabs */}
-      <div className="flex justify-center space-x-8 mt-6 border-b">
+      <div className="flex justify-center space-x-8 mt-6 border-b border-border">
         <button onClick={() => setTab('posts')} className={tab === 'posts' ? 'font-bold border-b-2 border-primary' : ''}>Posts</button>
         <button onClick={() => setTab('liked')} className={tab === 'liked' ? 'font-bold border-b-2 border-primary' : ''}>Liked</button>
       </div>

@@ -9,6 +9,52 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply bg-background text-text transition-colors duration-300;
+}
+
+a, button {
+  @apply transition-colors duration-200;
+}
+
+.dark body {
+  @apply bg-black text-gray-100;
+}
+
+/* Basic dark overrides for common light classes */
+.dark .bg-white {
+  @apply bg-gray-800;
+}
+
+.dark .text-black {
+  @apply text-gray-100;
+}
+
+.dark .border-gray-200 {
+  @apply border-gray-700;
+}
+
+.dark .border-gray-300 {
+  @apply border-gray-600;
+}
+
+.dark .text-gray-800 {
+  @apply text-gray-100;
+}
+
+.dark .text-gray-700 {
+  @apply text-gray-300;
+}
+
+.dark .text-gray-600 {
+  @apply text-gray-400;
+}
+
+.dark .bg-gray-100 {
+  @apply bg-gray-800;
+}
+
+.dark .bg-gray-50 {
+  @apply bg-gray-700;
 }
 
 code {

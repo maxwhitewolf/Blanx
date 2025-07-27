@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-b border-border px-4 py-2 flex items-center justify-between">
+    <nav className="bg-card border-b border-border px-4 py-2 flex items-center justify-between transition-colors">
       <div className="flex items-center space-x-2">
         <span className="text-primary font-bold text-xl cursor-pointer" onClick={() => navigate('/')}>Instagram</span>
       </div>

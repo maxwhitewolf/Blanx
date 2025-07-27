@@ -43,7 +43,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-xs p-8 bg-white rounded shadow">
+      <div className="w-full max-w-xs p-8 bg-card rounded shadow border border-border transition-colors">
         <h2 className="text-primary text-2xl font-bold mb-6 text-center">Instagram Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input

@@ -1,4 +1,5 @@
 module.exports = {
+  darkMode: 'class',
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html"
@@ -7,11 +8,12 @@ module.exports = {
     extend: {
       colors: {
         primary: '#0095F6',
-        background: '#FAFAFA',
-        lightgray: '#DBDBDB',
-        text: '#262626',
-        border: '#EFEFEF',
+        background: '#000000',
+        lightgray: '#333333',
+        text: '#FAFAFA',
+        border: '#262626',
         danger: '#ED4956',
+        card: '#1a1a1a'
       },
       fontFamily: {
         sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif'],

@@ -50,8 +50,8 @@ const PostCard = ({ id, user, image, caption, comments = [], likes = [] }) => {
   const userAvatar = user?.avatar;
 
   return (
-    <div className="bg-white rounded shadow mb-4">
-      <div className="p-4 border-b border-gray-200 flex items-center">
+    <div className="bg-card rounded-lg shadow mb-4 border border-border transition-colors">
+      <div className="p-4 border-b border-border flex items-center">
         {userAvatar ? (
           <img 
             src={userAvatar} 
@@ -87,7 +87,7 @@ const PostCard = ({ id, user, image, caption, comments = [], likes = [] }) => {
         <Comments comments={allComments} />
         <CommentBox onAdd={handleAddComment} />
         
-        <div className="flex space-x-4 mt-3 pt-3 border-t border-gray-100">
+        <div className="flex space-x-4 mt-3 pt-3 border-t border-border">
           <button 
             className={`text-blue-500 hover:text-blue-700 transition-colors ${liked ? 'font-bold' : ''}`} 
             onClick={handleLike} 
