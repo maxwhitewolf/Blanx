@@ -43,4 +43,11 @@
 8. Start Channels/ASGI server (for WebSockets):
    ```bash
    daphne -p 8001 config.asgi:application
-   ``` 
+   ```
+
+## Real-time Connections
+
+The frontend connects directly to Django Channels using native WebSockets.
+Set the `REACT_APP_SOCKET_URL` environment variable (see `.env.example`) to the
+base WebSocket URL. Notifications connect to `/ws/notifications/` and direct
+messages connect to `/ws/chat/<conversation_id>/`.

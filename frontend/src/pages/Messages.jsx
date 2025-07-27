@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import socket from '../api/socket';
+import React, { useEffect, useState, useRef } from 'react';
+import { createWebSocket } from '../api/socket';
 import { useSelector } from 'react-redux';
 import ChatBox from '../components/ChatBox';
 import ChatList from '../components/ChatList';
@@ -24,35 +24,38 @@ const Messages = () => {
     }
   }, [isAuthenticated]);
 
+  const wsRef = useRef(null);
   useEffect(() => {
     if (isAuthenticated && selectedId) {
-      socket.connect();
-      setConnected(true);
-      socket.emit('join', { conversationId: selectedId });
+      wsRef.current = createWebSocket(`/ws/chat/${selectedId}/`);
+      wsRef.current.onopen = () => setConnected(true);
+      wsRef.current.onclose = () => setConnected(false);
       setMessages([]); // Clear messages on conversation change
-      socket.on('chat_message', (msg) => {
-        setMessages((prev) => [...prev, msg]);
-      });
-      socket.on('typing', () => {
-        setTyping(true);
-        setTimeout(() => setTyping(false), 1500);
-      });
+      wsRef.current.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        setMessages((prev) => [...prev, { message: data.message, sender: data.user_id }]);
+      };
     }
     return () => {
-      socket.off('chat_message');
-      socket.off('typing');
-      socket.disconnect();
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
       setConnected(false);
     };
   }, [isAuthenticated, selectedId]);
 
   const handleSend = (message) => {
-    socket.emit('chat_message', { conversationId: selectedId, message });
-    setMessages((prev) => [...prev, { message, sender: user?.username }]);
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ message }));
+      setMessages((prev) => [...prev, { message, sender: user?.id }]);
+    }
   };
 
   const handleTyping = () => {
-    socket.emit('typing', { conversationId: selectedId });
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ typing: true }));
+    }
   };
 
   return (
@@ -70,7 +73,7 @@ const Messages = () => {
         <div className="flex-1 overflow-y-auto mb-2">
           {messages.length === 0 && <div className="text-gray-500 text-center">No messages yet.</div>}
           {messages.map((msg, idx) => (
-            <MessageBubble key={idx} message={msg.message} isOwn={msg.sender === user?.username} />
+            <MessageBubble key={idx} message={msg.message} isOwn={msg.sender === user?.id} />
           ))}
           {typing && <div className="text-xs text-gray-400 italic">Someone is typing...</div>}
         </div>
