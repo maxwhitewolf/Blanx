@@ -7,6 +7,7 @@ BLANX is a full-stack social media project consisting of a Django backend and a 
 ```
 ./backend   - Django project with Celery and Channels
 ./frontend  - React application using Redux and Tailwind
+./mobile    - React Native app built with Expo
 ./docker-compose.yml - Containers for PostgreSQL, Redis, Django, Daphne and Celery
 ```
 
@@ -53,6 +54,17 @@ BLANX is a full-stack social media project consisting of a Django backend and a 
    npm install
    ```
 3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+### Mobile (Expo)
+1. `cd mobile`
+2. Install packages:
+   ```bash
+   npm install
+   ```
+3. Start the Expo development server:
    ```bash
    npm start
    ```
